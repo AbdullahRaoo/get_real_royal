@@ -36,7 +36,43 @@
 
   <script>
     (() => {
+      const appUrl = 'https://app.realroyal.co/';
       const targetTitle = 'Real - La forma segura de obtener regalos';
+      const targetLabels = new Set(['Crea tu perfil']);
+
+      const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
+
+      const lockAppLinks = () => {
+        document.querySelectorAll('a').forEach((anchor) => {
+          const label = normalizeText(anchor.textContent || '');
+          if (!targetLabels.has(label)) {
+            return;
+          }
+
+          if (anchor.getAttribute('href') !== appUrl) {
+            anchor.setAttribute('href', appUrl);
+          }
+        });
+      };
+
+      const forceAppNavigation = (event) => {
+        const anchor = event.target instanceof Element ? event.target.closest('a') : null;
+        if (!anchor) {
+          return;
+        }
+
+        const label = normalizeText(anchor.textContent || '');
+        const href = anchor.getAttribute('href') || '';
+        const shouldForce = targetLabels.has(label) || href.includes('#cta') || href.includes('framer.com') || href === appUrl;
+
+        if (!shouldForce) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.location.assign(appUrl);
+      };
 
       const applyTitle = () => {
         if (document.title !== targetTitle) {
@@ -49,11 +85,32 @@
         }
       };
 
-      document.addEventListener('DOMContentLoaded', applyTitle, { once: true });
-      window.addEventListener('load', applyTitle, { once: true });
-      setTimeout(applyTitle, 0);
-      setTimeout(applyTitle, 250);
-      setTimeout(applyTitle, 1000);
+      const applyGuards = () => {
+        applyTitle();
+        lockAppLinks();
+      };
+
+      const observer = new MutationObserver(applyGuards);
+
+      document.addEventListener('DOMContentLoaded', applyGuards, { once: true });
+      window.addEventListener('load', applyGuards, { once: true });
+      document.addEventListener('click', forceAppNavigation, true);
+      document.addEventListener('auxclick', forceAppNavigation, true);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          forceAppNavigation(event);
+        }
+      }, true);
+      setTimeout(applyGuards, 0);
+      setTimeout(applyGuards, 250);
+      setTimeout(applyGuards, 1000);
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        attributeFilter: ['href'],
+      });
     })();
   </script>
 

@@ -12511,13 +12511,49 @@
     id="__framer__handoverData">[{"0":1,"1":16},["Map",2,3,10,11,13,14],"{\"from\":\"147625f3-b822-4c47-8e7b-9d35d653a5cc\",\"limit\":{\"type\":\"LiteralValue\",\"value\":1},\"offset\":{\"type\":\"LiteralValue\",\"value\":1},\"select\":[{\"collection\":\"H3cyLR0rH\",\"name\":\"RooMAy2it\",\"type\":\"Identifier\"},{\"collection\":\"H3cyLR0rH\",\"name\":\"id\",\"type\":\"Identifier\"}]}default",[4],{"RooMAy2it":5,"id":8},{"type":6,"value":7},"string","how-conscious-breathing-can-reduce-stress",{"type":6,"value":9},"XnFYod9hQ","{\"from\":\"147625f3-b822-4c47-8e7b-9d35d653a5cc\",\"limit\":{\"type\":\"LiteralValue\",\"value\":1},\"offset\":{\"type\":\"LiteralValue\",\"value\":1},\"select\":[{\"collection\":\"dgPIPTpyK\",\"name\":\"RooMAy2it\",\"type\":\"Identifier\"},{\"collection\":\"dgPIPTpyK\",\"name\":\"id\",\"type\":\"Identifier\"}]}default",[12],{"RooMAy2it":5,"id":8},"{\"from\":\"147625f3-b822-4c47-8e7b-9d35d653a5cc\",\"limit\":{\"type\":\"LiteralValue\",\"value\":1},\"offset\":{\"type\":\"LiteralValue\",\"value\":1},\"select\":[{\"collection\":\"bZ5eBCgDO\",\"name\":\"RooMAy2it\",\"type\":\"Identifier\"},{\"collection\":\"bZ5eBCgDO\",\"name\":\"id\",\"type\":\"Identifier\"}]}default",[15],{"RooMAy2it":5,"id":8},["Map"]]</script>
   <script>
     (() => {
+      const appUrl = 'https://app.realroyal.co/';
       const targetText = "With the confidence of Real.";
       const targetTitle = "Real - The Secure Way to Get Gifts";
       const selector = '.framer-17hdh4c p';
+      const targetLabels = new Set(['Try it now', 'Create your profile']);
+
+      const normalizeText = (value) => value.replace(/\s+/g, ' ').trim();
 
       const applyText = () => {
         const node = document.querySelector(selector);
         if (node && node.textContent !== targetText) node.textContent = targetText;
+      };
+
+      const lockAppLinks = () => {
+        document.querySelectorAll('a').forEach((anchor) => {
+          const label = normalizeText(anchor.textContent || '');
+          if (!targetLabels.has(label)) {
+            return;
+          }
+
+          if (anchor.getAttribute('href') !== appUrl) {
+            anchor.setAttribute('href', appUrl);
+          }
+        });
+      };
+
+      const forceAppNavigation = (event) => {
+        const anchor = event.target instanceof Element ? event.target.closest('a') : null;
+        if (!anchor) {
+          return;
+        }
+
+        const label = normalizeText(anchor.textContent || '');
+        const href = anchor.getAttribute('href') || '';
+        const shouldForce = targetLabels.has(label) || href.includes('#cta') || href.includes('framer.com') || href === appUrl;
+
+        if (!shouldForce) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.location.assign(appUrl);
       };
 
       const applyTitle = () => {
@@ -12532,27 +12568,45 @@
       const start = () => {
         applyText();
         applyTitle();
+        lockAppLinks();
+
+        document.addEventListener('click', forceAppNavigation, true);
+        document.addEventListener('auxclick', forceAppNavigation, true);
+        document.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter') {
+            return;
+          }
+
+          forceAppNavigation(event);
+        }, true);
 
         const observer = new MutationObserver(() => {
           applyText();
           applyTitle();
+          lockAppLinks();
         });
         observer.observe(document.documentElement, {
           childList: true,
           subtree: true,
           characterData: true,
+          attributes: true,
+          attributeFilter: ['href'],
         });
 
         window.addEventListener("load", () => {
           applyText();
           applyTitle();
+          lockAppLinks();
         }, { once: true });
         window.setTimeout(applyText, 0);
         window.setTimeout(applyTitle, 0);
+        window.setTimeout(lockAppLinks, 0);
         window.setTimeout(applyText, 250);
         window.setTimeout(applyTitle, 250);
+        window.setTimeout(lockAppLinks, 250);
         window.setTimeout(applyText, 1000);
         window.setTimeout(applyTitle, 1000);
+        window.setTimeout(lockAppLinks, 1000);
       };
 
       if (document.readyState === "loading") {
