@@ -12512,6 +12512,7 @@
   <script>
     (() => {
       const targetText = "With the confidence of Real.";
+      const targetTitle = "Real - The Secure Way to Get Gifts";
       const selector = '.framer-17hdh4c p';
 
       const applyText = () => {
@@ -12519,20 +12520,39 @@
         if (node && node.textContent !== targetText) node.textContent = targetText;
       };
 
+      const applyTitle = () => {
+        if (document.title !== targetTitle) document.title = targetTitle;
+
+        const titleNode = document.querySelector('head title');
+        if (titleNode && titleNode.textContent !== targetTitle) {
+          titleNode.textContent = targetTitle;
+        }
+      };
+
       const start = () => {
         applyText();
+        applyTitle();
 
-        const observer = new MutationObserver(applyText);
+        const observer = new MutationObserver(() => {
+          applyText();
+          applyTitle();
+        });
         observer.observe(document.documentElement, {
           childList: true,
           subtree: true,
           characterData: true,
         });
 
-        window.addEventListener("load", applyText, { once: true });
+        window.addEventListener("load", () => {
+          applyText();
+          applyTitle();
+        }, { once: true });
         window.setTimeout(applyText, 0);
+        window.setTimeout(applyTitle, 0);
         window.setTimeout(applyText, 250);
+        window.setTimeout(applyTitle, 250);
         window.setTimeout(applyText, 1000);
+        window.setTimeout(applyTitle, 1000);
       };
 
       if (document.readyState === "loading") {

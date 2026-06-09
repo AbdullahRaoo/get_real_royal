@@ -8,7 +8,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>Real - Inicio</title>
+  <title>Real - La forma segura de obtener regalos</title>
   <meta name="description"
     content="Real es la forma segura y elegante para que tus seguidores te regalen lo que quieres, sin exponer tu identidad.">
   <link href="../images/cropped-Filled-Logomark-Dark-32x32.png" rel="icon"
@@ -27,6 +27,35 @@
   <meta name="twitter:title" content="Real - Inicio">
   <meta name="twitter:description" content="Real es la forma segura y elegante para que tus seguidores te regalen lo que quieres, sin exponer tu identidad.">
   <meta name="twitter:image" content="../images/screenshot.jpg">
+
+  <style>
+    #__framer-editorbar-container {
+      display: none !important;
+    }
+  </style>
+
+  <script>
+    (() => {
+      const targetTitle = 'Real - La forma segura de obtener regalos';
+
+      const applyTitle = () => {
+        if (document.title !== targetTitle) {
+          document.title = targetTitle;
+        }
+
+        const titleNode = document.querySelector('head > title');
+        if (titleNode && titleNode.textContent !== targetTitle) {
+          titleNode.textContent = targetTitle;
+        }
+      };
+
+      document.addEventListener('DOMContentLoaded', applyTitle, { once: true });
+      window.addEventListener('load', applyTitle, { once: true });
+      setTimeout(applyTitle, 0);
+      setTimeout(applyTitle, 250);
+      setTimeout(applyTitle, 1000);
+    })();
+  </script>
 
   <style data-framer-font-css>
     /* cyrillic-ext */

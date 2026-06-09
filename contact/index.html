@@ -28,6 +28,35 @@
   <meta name="twitter:description" content="Contact Real to ask a question or start a conversation.">
   <meta name="twitter:image" content="../images/screenshot.jpg">
 
+  <style>
+    #__framer-editorbar-container {
+      display: none !important;
+    }
+  </style>
+
+  <script>
+    (() => {
+      const targetTitle = 'Real - Contact';
+
+      const applyTitle = () => {
+        if (document.title !== targetTitle) {
+          document.title = targetTitle;
+        }
+
+        const titleNode = document.querySelector('head > title');
+        if (titleNode && titleNode.textContent !== targetTitle) {
+          titleNode.textContent = targetTitle;
+        }
+      };
+
+      document.addEventListener('DOMContentLoaded', applyTitle, { once: true });
+      window.addEventListener('load', applyTitle, { once: true });
+      setTimeout(applyTitle, 0);
+      setTimeout(applyTitle, 250);
+      setTimeout(applyTitle, 1000);
+    })();
+  </script>
+
   <style data-framer-font-css>
     /* cyrillic-ext */
     @font-face {
