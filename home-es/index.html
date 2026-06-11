@@ -45,12 +45,91 @@
       const lockAppLinks = () => {
         document.querySelectorAll('a').forEach((anchor) => {
           const label = normalizeText(anchor.textContent || '');
-          if (!targetLabels.has(label)) {
+          const __href = anchor.getAttribute('href') || '';
+          if (!targetLabels.has(label) && !__href.includes('framer.com')) {
             return;
           }
 
           if (anchor.getAttribute('href') !== appUrl) {
             anchor.setAttribute('href', appUrl);
+          }
+        });
+      };
+
+      const socialIconMap = {
+        '#svg-1781717432_357': { name: 'Instagram', href: 'https://www.instagram.com/getrealroyal/', icon: '../images/instapurple.svg' },
+        '#svg-1623546913_469': { name: 'TikTok', href: 'https://www.tiktok.com/@getrealroyal', icon: '../images/tiktokpurple.svg' },
+        '#svg1665108662_1028': { name: 'X', href: 'https://x.com/getrealroyal', icon: '../images/xpurple.svg' },
+      };
+
+      const lockSocialLinks = () => {
+        document.querySelectorAll('a[aria-label="Social Media Link"]').forEach((anchor) => {
+          const use = anchor.querySelector('use');
+          const useHref = use ? (use.getAttribute('href') || use.getAttribute('xlink:href')) : null;
+          const config = useHref ? socialIconMap[useHref] : null;
+          if (!config) {
+            return;
+          }
+
+          if (anchor.getAttribute('href') !== config.href) {
+            anchor.setAttribute('href', config.href);
+          }
+          if (anchor.getAttribute('data-framer-name') !== config.name) {
+            anchor.setAttribute('data-framer-name', config.name);
+          }
+
+          const svg = use.closest('svg');
+          if (svg) {
+            const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            img.setAttribute('href', config.icon);
+            img.setAttribute('width', '32');
+            img.setAttribute('height', '32');
+            svg.replaceChildren(img);
+          }
+        });
+      };
+
+      const ctaTextMap = { 'Contacta con nosotras': 'Regístrate ahora' };
+
+      const lockSignupCta = () => {
+        document.querySelectorAll('a[data-framer-name="Primary /Filled"]').forEach((anchor) => {
+          const strong = anchor.querySelector('p strong');
+          if (!strong) {
+            return;
+          }
+
+          const text = normalizeText(strong.textContent || '');
+          const newText = ctaTextMap[text];
+          const isTarget = Boolean(newText) || Object.values(ctaTextMap).includes(text);
+          if (!isTarget) {
+            return;
+          }
+
+          if (newText && strong.textContent !== newText) {
+            strong.textContent = newText;
+          }
+
+          if (anchor.getAttribute('href') !== appUrl) {
+            anchor.setAttribute('href', appUrl);
+          }
+        });
+      };
+
+      const ctaCopyMap = {
+        'Tu viaje de regalo comienza aquí': 'Únete a Real hoy',
+        'Comience con Real hoy.': 'Regístrate ahora y comienza tu viaje de regalo.',
+      };
+
+      const lockCtaCopy = () => {
+        document.querySelectorAll('h2, p').forEach((node) => {
+          if (node.children.length > 0) {
+            return;
+          }
+
+          const text = normalizeText(node.textContent || '');
+          const newText = ctaCopyMap[text];
+          if (newText && node.textContent !== newText) {
+            node.textContent = newText;
           }
         });
       };
@@ -88,6 +167,9 @@
       const applyGuards = () => {
         applyTitle();
         lockAppLinks();
+        lockSocialLinks();
+        lockSignupCta();
+        lockCtaCopy();
       };
 
       const observer = new MutationObserver(applyGuards);
@@ -11954,23 +12036,23 @@
                         style="--extracted-1of0zx5:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11));--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                         <h2 class="framer-text framer-styles-preset-ugul1a" data-styles-preset="PSEgU1pGW"
                           style="--framer-text-alignment:center;--framer-text-color:var(--extracted-1of0zx5, var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11)))">
-                          Tu viaje de regalo comienza aquí</h2>
+                          Únete a Real hoy</h2>
                       </div>
                       <div class="framer-1vcgw76" data-framer-appear-id="1vcgw76" data-framer-name="Header"
                         data-framer-component-type="RichTextContainer"
                         style="--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                         <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
-                          style="--framer-text-alignment:center">Comience con Real hoy.</p>
+                          style="--framer-text-alignment:center">Regístrate ahora y comienza tu viaje de regalo.</p>
                       </div>
                       <div class="framer-t9vfu1-container"><!--$--><a
                           class="framer-9kR1e framer-kHAoR framer-13x79so framer-v-13x79so framer-18aeie2"
-                          data-border="true" data-framer-name="Primary /Filled" href="./contact"
+                          data-border="true" data-framer-name="Primary /Filled" href="https://app.realroyal.co/"
                           style="--border-bottom-width:2px;--border-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--border-left-width:2px;--border-right-width:2px;--border-style:solid;--border-top-width:2px;--hmd4db:12px 20px 12px 20px;background-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));will-change:transform;border-bottom-left-radius:187px;border-bottom-right-radius:187px;border-top-left-radius:187px;border-top-right-radius:187px;opacity:0;transform:translateY(24px)">
                           <div class="framer-1w0oc5q" data-framer-component-type="RichTextContainer"
                             style="--extracted-r6o4lv:var(--variable-reference-hPmmUjgL0-kwsX1BESG);--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;--variable-reference-eqpI4VwwC-kwsX1BESG:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--variable-reference-hPmmUjgL0-kwsX1BESG:var(--token-a79b86b8-c2a9-43b9-85bf-8ee058fb0bf6, rgb(255, 255, 255));transform:none">
                             <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
                               style="--framer-text-color:var(--extracted-r6o4lv, var(--variable-reference-hPmmUjgL0-kwsX1BESG))">
-                              <strong class="framer-text">Contacta con nosotras</strong></p>
+                              <strong class="framer-text">Regístrate ahora</strong></p>
                           </div>
                         </a><!--/$--></div>
                     </div>
@@ -12026,23 +12108,23 @@
                         style="--extracted-1of0zx5:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11));--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                         <h2 class="framer-text framer-styles-preset-ugul1a" data-styles-preset="PSEgU1pGW"
                           style="--framer-text-alignment:center;--framer-text-color:var(--extracted-1of0zx5, var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11)))">
-                          Tu viaje de regalo comienza aquí</h2>
+                          Únete a Real hoy</h2>
                       </div>
                       <div class="framer-1vcgw76" data-framer-appear-id="1vcgw76" data-framer-name="Header"
                         data-framer-component-type="RichTextContainer"
                         style="--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                         <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
-                          style="--framer-text-alignment:center">Comience con Real hoy.</p>
+                          style="--framer-text-alignment:center">Regístrate ahora y comienza tu viaje de regalo.</p>
                       </div>
                       <div class="framer-t9vfu1-container"><!--$--><a
                           class="framer-9kR1e framer-kHAoR framer-13x79so framer-v-13x79so framer-18aeie2"
-                          data-border="true" data-framer-name="Primary /Filled" href="./contact"
+                          data-border="true" data-framer-name="Primary /Filled" href="https://app.realroyal.co/"
                           style="--border-bottom-width:2px;--border-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--border-left-width:2px;--border-right-width:2px;--border-style:solid;--border-top-width:2px;--hmd4db:12px 20px 12px 20px;background-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));will-change:transform;border-bottom-left-radius:187px;border-bottom-right-radius:187px;border-top-left-radius:187px;border-top-right-radius:187px;opacity:0;transform:translateY(24px)">
                           <div class="framer-1w0oc5q" data-framer-component-type="RichTextContainer"
                             style="--extracted-r6o4lv:var(--variable-reference-hPmmUjgL0-kwsX1BESG);--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;--variable-reference-eqpI4VwwC-kwsX1BESG:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--variable-reference-hPmmUjgL0-kwsX1BESG:var(--token-a79b86b8-c2a9-43b9-85bf-8ee058fb0bf6, rgb(255, 255, 255));transform:none">
                             <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
                               style="--framer-text-color:var(--extracted-r6o4lv, var(--variable-reference-hPmmUjgL0-kwsX1BESG))">
-                              <strong class="framer-text">Contacta con nosotras</strong></p>
+                              <strong class="framer-text">Regístrate ahora</strong></p>
                           </div>
                         </a><!--/$--></div>
                     </div>
@@ -12101,23 +12183,23 @@
                       style="--extracted-1of0zx5:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11));--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                       <h2 class="framer-text framer-styles-preset-ugul1a" data-styles-preset="PSEgU1pGW"
                         style="--framer-text-alignment:center;--framer-text-color:var(--extracted-1of0zx5, var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(11, 11, 11)))">
-                        Tu viaje de regalo comienza aquí</h2>
+                        Únete a Real hoy</h2>
                     </div>
                     <div class="framer-1vcgw76" data-framer-appear-id="1vcgw76" data-framer-name="Header"
                       data-framer-component-type="RichTextContainer"
                       style="--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;will-change:transform;opacity:0.001;transform:translateY(-24px)">
                       <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
-                        style="--framer-text-alignment:center">Comience con Real hoy.</p>
+                        style="--framer-text-alignment:center">Regístrate ahora y comienza tu viaje de regalo.</p>
                     </div>
                     <div class="framer-t9vfu1-container"><!--$--><a
                         class="framer-9kR1e framer-kHAoR framer-13x79so framer-v-13x79so framer-18aeie2"
-                        data-border="true" data-framer-name="Primary /Filled" href="./contact"
+                        data-border="true" data-framer-name="Primary /Filled" href="https://app.realroyal.co/"
                         style="--border-bottom-width:2px;--border-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--border-left-width:2px;--border-right-width:2px;--border-style:solid;--border-top-width:2px;--hmd4db:12px 20px 12px 20px;background-color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));will-change:transform;border-bottom-left-radius:187px;border-bottom-right-radius:187px;border-top-left-radius:187px;border-top-right-radius:187px;opacity:0;transform:translateY(24px)">
                         <div class="framer-1w0oc5q" data-framer-component-type="RichTextContainer"
                           style="--extracted-r6o4lv:var(--variable-reference-hPmmUjgL0-kwsX1BESG);--framer-link-text-color:rgb(0, 153, 255);--framer-link-text-decoration:underline;--variable-reference-eqpI4VwwC-kwsX1BESG:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));--variable-reference-hPmmUjgL0-kwsX1BESG:var(--token-a79b86b8-c2a9-43b9-85bf-8ee058fb0bf6, rgb(255, 255, 255));transform:none">
                           <p class="framer-text framer-styles-preset-1hj8z0a" data-styles-preset="UByHkDadJ"
                             style="--framer-text-color:var(--extracted-r6o4lv, var(--variable-reference-hPmmUjgL0-kwsX1BESG))">
-                            <strong class="framer-text">Contacta con nosotras</strong></p>
+                            <strong class="framer-text">Regístrate ahora</strong></p>
                         </div>
                       </a><!--/$--></div>
                   </div>
@@ -12203,7 +12285,7 @@
                   <div class="framer-xl005z" data-framer-name="Social">
                     <div class="framer-l7ivyb-container"><!--$--><a aria-label="Social Media Link"
                         class="framer-EA15g framer-n94npe framer-v-c1iqqa framer-1ec9dbv" data-framer-name="Instagram"
-                        data-highlight="true" href="https://instagram.com/tonjrv" target="_blank" rel="noopener"
+                        data-highlight="true" href="https://www.instagram.com/getrealroyal/" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12214,14 +12296,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1781717432_357" />
+                                <image href="../images/instapurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-cl56qy-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="Facebook"
-                        data-highlight="true" href="https://www.facebook.com/" target="_blank" rel="noopener"
+                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="TikTok"
+                        data-highlight="true" href="https://www.tiktok.com/@getrealroyal" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12232,14 +12314,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1623546913_469" />
+                                <image href="../images/tiktokpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-1ny0ih6-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="Threads"
-                        data-highlight="true" href="http://instagram.com/" target="_blank" rel="noopener" tabindex="0"
+                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="X"
+                        data-highlight="true" href="https://x.com/getrealroyal" target="_blank" rel="noopener" tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
                           style="--border-bottom-width:1px;--border-color:var(--token-20b8bc5d-cbfb-4d18-bc74-55ca34171e95, rgb(235, 235, 235));--border-left-width:1px;--border-right-width:1px;--border-style:solid;--border-top-width:1px;background-color:rgba(255, 255, 255, 0.2);border-bottom-left-radius:797px;border-bottom-right-radius:797px;border-top-left-radius:797px;border-top-right-radius:797px">
@@ -12248,7 +12330,7 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg1665108662_1028" />
+                                <image href="../images/xpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
@@ -12303,7 +12385,7 @@
                   <div class="framer-xl005z" data-framer-name="Social">
                     <div class="framer-l7ivyb-container"><!--$--><a aria-label="Social Media Link"
                         class="framer-EA15g framer-n94npe framer-v-c1iqqa framer-1ec9dbv" data-framer-name="Instagram"
-                        data-highlight="true" href="https://instagram.com/tonjrv" target="_blank" rel="noopener"
+                        data-highlight="true" href="https://www.instagram.com/getrealroyal/" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12314,14 +12396,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1781717432_357" />
+                                <image href="../images/instapurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-cl56qy-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="Facebook"
-                        data-highlight="true" href="https://www.facebook.com/" target="_blank" rel="noopener"
+                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="TikTok"
+                        data-highlight="true" href="https://www.tiktok.com/@getrealroyal" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12332,14 +12414,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1623546913_469" />
+                                <image href="../images/tiktokpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-1ny0ih6-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="Threads"
-                        data-highlight="true" href="http://instagram.com/" target="_blank" rel="noopener" tabindex="0"
+                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="X"
+                        data-highlight="true" href="https://x.com/getrealroyal" target="_blank" rel="noopener" tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
                           style="--border-bottom-width:1px;--border-color:var(--token-20b8bc5d-cbfb-4d18-bc74-55ca34171e95, rgb(235, 235, 235));--border-left-width:1px;--border-right-width:1px;--border-style:solid;--border-top-width:1px;background-color:rgba(255, 255, 255, 0.2);border-bottom-left-radius:797px;border-bottom-right-radius:797px;border-top-left-radius:797px;border-top-right-radius:797px">
@@ -12348,7 +12430,7 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg1665108662_1028" />
+                                <image href="../images/xpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
@@ -12403,7 +12485,7 @@
                   <div class="framer-xl005z" data-framer-name="Social">
                     <div class="framer-l7ivyb-container"><!--$--><a aria-label="Social Media Link"
                         class="framer-EA15g framer-n94npe framer-v-c1iqqa framer-1ec9dbv" data-framer-name="Instagram"
-                        data-highlight="true" href="https://instagram.com/tonjrv" target="_blank" rel="noopener"
+                        data-highlight="true" href="https://www.instagram.com/getrealroyal/" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12414,14 +12496,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1781717432_357" />
+                                <image href="../images/instapurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-cl56qy-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="Facebook"
-                        data-highlight="true" href="https://www.facebook.com/" target="_blank" rel="noopener"
+                        class="framer-EA15g framer-n94npe framer-v-n94npe framer-1ec9dbv" data-framer-name="TikTok"
+                        data-highlight="true" href="https://www.tiktok.com/@getrealroyal" target="_blank" rel="noopener"
                         tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
@@ -12432,14 +12514,14 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg-1623546913_469" />
+                                <image href="../images/tiktokpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
                       </a><!--/$--></div>
                     <div class="framer-1ny0ih6-container"><!--$--><a aria-label="Social Media Link"
-                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="Threads"
-                        data-highlight="true" href="http://instagram.com/" target="_blank" rel="noopener" tabindex="0"
+                        class="framer-EA15g framer-n94npe framer-v-1yykru8 framer-1ec9dbv" data-framer-name="X"
+                        data-highlight="true" href="https://x.com/getrealroyal" target="_blank" rel="noopener" tabindex="0"
                         style="background-color:var(--token-b475daa1-123e-4ac4-9203-afa2fe736f56, rgb(11, 11, 11));border-bottom-left-radius:577px;border-bottom-right-radius:577px;border-top-left-radius:577px;border-top-right-radius:577px">
                         <div class="framer-bv3psh" data-border="true" data-framer-name="Icon"
                           style="--border-bottom-width:1px;--border-color:var(--token-20b8bc5d-cbfb-4d18-bc74-55ca34171e95, rgb(235, 235, 235));--border-left-width:1px;--border-right-width:1px;--border-style:solid;--border-top-width:1px;background-color:rgba(255, 255, 255, 0.2);border-bottom-left-radius:797px;border-bottom-right-radius:797px;border-top-left-radius:797px;border-top-right-radius:797px">
@@ -12448,7 +12530,7 @@
                             style="image-rendering:pixelated;flex-shrink:0;fill:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0));color:var(--token-fe8040e6-3344-44c0-bab9-226d490ba5f3, rgb(61, 0, 0))">
                             <div class="svgContainer" style="width:100%;height:100%;aspect-ratio:inherit"><svg
                                 style="width:100%;height:100%;" viewBox="0 0 32 32">
-                                <use href="#svg1665108662_1028" />
+                                <image href="../images/xpurple.svg" width="32" height="32" />
                               </svg></div>
                           </div>
                         </div>
