@@ -11,6 +11,9 @@
     content="Real is the secure, elegant way for your followers to gift you what you want, without exposing your identity.">
   <link href="images/cropped-Filled-Logomark-Dark-32x32.png" rel="icon" media="(prefers-color-scheme: light)">
   <link href="images/cropped-Filled-Logomark-Dark-32x32.png" rel="icon" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Real - The Secure Way to Get Gifts">
@@ -12538,17 +12541,28 @@
         });
       };
 
-      const socialIconMap = {
-        '#svg-1781717432_357': { name: 'Instagram', href: 'https://www.instagram.com/getrealroyal/', icon: 'images/instapurple.svg' },
-        '#svg-1623546913_469': { name: 'TikTok', href: 'https://www.tiktok.com/@getrealroyal', icon: 'images/tiktokpurple.svg' },
-        '#svg1665108662_1028': { name: 'X', href: 'https://x.com/getrealroyal', icon: 'images/xpurple.svg' },
+      const socialConfigByName = {
+        Instagram: { href: 'https://www.instagram.com/getrealroyal/', icon: 'fa-instagram' },
+        TikTok: { href: 'https://www.tiktok.com/@getrealroyal', icon: 'fa-tiktok' },
+        X: { href: 'https://x.com/getrealroyal', icon: 'fa-x-twitter' },
+      };
+
+      const socialNameByUseHref = {
+        '#svg-1781717432_357': 'Instagram',
+        '#svg-1623546913_469': 'TikTok',
+        '#svg1665108662_1028': 'X',
       };
 
       const lockSocialLinks = () => {
         document.querySelectorAll('a[aria-label="Social Media Link"]').forEach((anchor) => {
-          const use = anchor.querySelector('use');
-          const useHref = use ? (use.getAttribute('href') || use.getAttribute('xlink:href')) : null;
-          const config = useHref ? socialIconMap[useHref] : null;
+          let name = anchor.getAttribute('data-framer-name');
+          if (!socialConfigByName[name]) {
+            const use = anchor.querySelector('use');
+            const useHref = use ? (use.getAttribute('href') || use.getAttribute('xlink:href')) : null;
+            name = useHref ? socialNameByUseHref[useHref] : null;
+          }
+
+          const config = name ? socialConfigByName[name] : null;
           if (!config) {
             return;
           }
@@ -12556,18 +12570,23 @@
           if (anchor.getAttribute('href') !== config.href) {
             anchor.setAttribute('href', config.href);
           }
-          if (anchor.getAttribute('data-framer-name') !== config.name) {
-            anchor.setAttribute('data-framer-name', config.name);
+          if (anchor.getAttribute('data-framer-name') !== name) {
+            anchor.setAttribute('data-framer-name', name);
           }
 
-          const svg = use.closest('svg');
-          if (svg) {
-            const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            img.setAttribute('href', config.icon);
-            img.setAttribute('width', '32');
-            img.setAttribute('height', '32');
-            svg.replaceChildren(img);
+          const svgWrap = anchor.querySelector('[data-framer-component-type="SVG"]');
+          if (!svgWrap || svgWrap.querySelector(`i.${config.icon}`)) {
+            return;
           }
+
+          svgWrap.innerHTML = '';
+          const icon = document.createElement('i');
+          icon.className = `fa-brands ${config.icon}`;
+          icon.setAttribute('aria-hidden', 'true');
+          icon.style.fontSize = '24px';
+          icon.style.lineHeight = '1';
+          icon.style.color = '#5F3D8F';
+          svgWrap.appendChild(icon);
         });
       };
 
